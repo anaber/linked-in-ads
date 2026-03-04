@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Engine Optimization (AEO) Strategy: Pinecone.io</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Deep Slate & Indigo - Represents trust, technical authority, and calm clarity suitable for developer tooling. -->
+    
+    <!-- Application Structure Plan: The SPA uses a dashboard layout with a sidebar navigation to segment the AEO strategy into logical, digestible phases: 1) Executive Overview, 2) Concrete Action Plan, 3) Content Optimization Strategy, and 4) Projected KPIs. This structure allows stakeholders to easily jump between high-level theory, actionable technical tasks, and business impact. The Action Plan includes interactive filtering to assign tasks to specific departments (DevRel, SEO, Engineering). -->
+    
+    <!-- Visualization & Content Choices: 
+         1. Overview -> Goal: Compare Market Share in LLMs -> Viz: Doughnut Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Clearly shows Pinecone's current vs competitor "Share of Voice" in AI responses.
+         2. Action Plan -> Goal: Organize & Inform -> Viz: Interactive Task Grid (HTML/Tailwind) -> Interaction: Dropdown filtering by department -> Justification: Makes a dense list of technical tasks manageable and assignable.
+         3. Content Strategy -> Goal: Change/Compare format effectiveness -> Viz: Radar Chart (Chart.js) -> Interaction: Hover details -> Justification: Contrasts traditional SEO content formats against AEO-friendly formats.
+         4. KPIs -> Goal: Inform on Projections -> Viz: Line Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Standard, highly readable format for time-series projections.
+         Library: Chart.js (Canvas). Confirming NO SVG or Mermaid used. -->
+         
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 280px;
+            }
+        }
+
+        .nav-item.active {
+            background-color: #e0e7ff; /* indigo-100 */
+            color: #4f46e5; /* indigo-600 */
+            font-weight: 600;
+            border-right: 4px solid #4f46e5;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-high { background-color: #fee2e2; color: #991b1b; } /* red */
+        .status-med { background-color: #fef3c7; color: #92400e; } /* amber */
+        .status-low { background-color: #e0e7ff; color: #3730a3; } /* indigo */
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden">
+
+    <nav class="w-full md:w-64 bg-white border-r border-slate-200 flex-shrink-0 flex flex-col shadow-sm z-10">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Pinecone<span class="text-indigo-600">.AEO</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">LLM Visibility Strategy</p>
+        </div>
+        <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-visible p-4 gap-2 flex-grow">
+            <button onclick="switchTab('overview')" id="nav-overview" class="nav-item active text-left px-4 py-3 rounded-lg text-sm transition-colors whitespace-nowrap">
+                <span class="mr-2">🌍</span> Executive Overview
+            </button>
+            <button onclick="switchTab('action-plan')" id="nav-action-plan" class="nav-item text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap">
+                <span class="mr-2">⚡</span> Concrete Action Plan
+            </button>
+            <button onclick="switchTab('content')" id="nav-content" class="nav-item text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap">
+                <span class="mr-2">📝</span> Content & Entity Strategy
+            </button>
+            <button onclick="switchTab('kpis')" id="nav-kpis" class="nav-item text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap">
+                <span class="mr-2">📈</span> Measurement & KPIs
+            </button>
+        </div>
+        <div class="p-4 border-t border-slate-200 text-xs text-slate-400 text-center">
+            Report generated for Pinecone.io
+        </div>
+    </nav>
+
+    <main class="flex-grow bg-slate-50 overflow-y-auto p-6 md:p-10">
+        <div class="max-w-6xl mx-auto">
+
+            <section id="overview" class="tab-content active">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Answer Engine Optimization (AEO) Overview</h2>
+                    <p class="text-slate-600 text-lg">As developers increasingly use LLMs (ChatGPT, Claude, Gemini, Perplexity) instead of traditional search engines to research vector databases, RAG architectures, and AI infrastructure, Pinecone must optimize its digital footprint for machine ingestion, not just human reading.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-xl font-semibold mb-4 text-slate-800">Current "Share of Voice" in LLMs</h3>
+                        <p class="text-sm text-slate-500 mb-6">Estimated probability of Pinecone being recommended as the primary solution for generic "vector database" queries across top foundation models.</p>
+                        <div class="chart-container">
+                            <canvas id="sovChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-xl font-semibold mb-3 text-slate-800">Why Traditional SEO is Insufficient</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-4">Traditional SEO focuses on keywords, backlinks, and click-through rates. AEO focuses on <strong>Entity Authority, Structured Facts, and Semantic Clarity</strong>. LLMs do not "click" links; they synthesize knowledge bases.</p>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✔</span>
+                                    <span class="text-sm text-slate-700"><strong>Goal:</strong> Be the definitive, factual answer for "What is the best vector database for RAG?"</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✔</span>
+                                    <span class="text-sm text-slate-700"><strong>Method:</strong> Structuring documentation, tutorials, and PR data into highly parsable, markdown-friendly formats.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-indigo-600 p-6 rounded-xl shadow-sm text-white">
+                            <h3 class="text-lg font-semibold mb-2">The AEO Paradigm Shift</h3>
+                            <div class="flex justify-between items-center mt-4">
+                                <div class="text-center">
+                                    <div class="text-indigo-200 text-xs uppercase tracking-wider mb-1">From</div>
+                                    <div class="font-bold">10 Blue Links</div>
+                                </div>
+                                <div class="text-indigo-300">➡</div>
+                                <div class="text-center">
+                                    <div class="text-indigo-200 text-xs uppercase tracking-wider mb-1">To</div>
+                                    <div class="font-bold">1 Synthesized Answer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="action-plan" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Concrete Action Plan</h2>
+                    <p class="text-slate-600 text-lg">A prioritized list of technical and content initiatives required to solidify Pinecone's position in LLM training data and real-time Retrieval-Augmented Generation processes (like Perplexity).</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                        <h3 class="text-xl font-semibold text-slate-800">Task Matrix</h3>
+                        <div class="flex items-center space-x-2">
+                            <label for="dept-filter" class="text-sm text-slate-500 font-medium">Filter by Department:</label>
+                            <select id="dept-filter" onchange="filterActions()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2">
+                                <option value="all">All Departments</option>
+                                <option value="engineering">Engineering / DevRel</option>
+                                <option value="content">Content / Marketing</option>
+                                <option value="seo">Technical SEO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="action-grid">
+                        
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="seo">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-high">Priority: High</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tech SEO</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">Implement `/llms.txt`</h4>
+                            <p class="text-sm text-slate-600">Create a highly concise, markdown-formatted file at the root domain specifically outlining Pinecone's core capabilities, pricing, and exact definitions of "Vector Database" for bots to scrape easily.</p>
+                        </div>
+
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="engineering">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-high">Priority: High</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Engineering</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">OpenAPI Spec Optimization</h4>
+                            <p class="text-sm text-slate-600">Ensure the Pinecone API documentation strictly adheres to OpenAPI 3.1 standards with highly descriptive summary fields. LLM agents rely on these specs to write code using Pinecone.</p>
+                        </div>
+
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="content">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-med">Priority: Medium</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Content</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">Definitional Content Overhaul</h4>
+                            <p class="text-sm text-slate-600">Rewrite the introductions to all core concept pages (e.g., "What is RAG?"). The first paragraph must be a direct, un-fluffed, encyclopedic definition that an LLM can easily extract and quote.</p>
+                        </div>
+
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="content">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-high">Priority: High</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Content / DevRel</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">Co-Citation in AI Frameworks</h4>
+                            <p class="text-sm text-slate-600">Actively push to be the default vector database example in tutorials for LangChain, LlamaIndex, and AutoGen. LLMs weigh frequency of co-occurrence with known AI entities heavily.</p>
+                        </div>
+
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="seo">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-med">Priority: Medium</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tech SEO</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">Structured Data (FAQ & Software)</h4>
+                            <p class="text-sm text-slate-600">Implement deep Schema.org markup. specifically `FAQPage` for definitional queries and `SoftwareApplication` mapping out exact feature sets, establishing explicit entity relationships.</p>
+                        </div>
+
+                        <div class="action-card p-5 border border-slate-100 rounded-lg bg-slate-50 hover:border-indigo-300 transition-colors" data-dept="engineering">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="status-badge status-low">Priority: Low</span>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">DevRel</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">StackOverflow Seed Strategy</h4>
+                            <p class="text-sm text-slate-600">Ensure highly detailed, factual answers exist on StackOverflow and Reddit for Pinecone vs [Competitor] queries. AI bots scrape these platforms heavily for consensus and sentiment.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section id="content" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Content & Entity Strategy</h2>
+                    <p class="text-slate-600 text-lg">LLMs process information differently than human readers. They favor density, structure, and directness. This section outlines how Pinecone's content must evolve to establish "Entity Authority."</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-xl font-semibold mb-4 text-slate-800">AEO vs Traditional SEO Content Formats</h3>
+                        <p class="text-sm text-slate-500 mb-6">Comparing the effectiveness of various content formats for traditional Google rankings versus LLM ingestion and citation.</p>
+                        <div class="chart-container">
+                            <canvas id="contentChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex-grow">
+                            <h3 class="text-xl font-semibold mb-3 text-slate-800">The "Knowledge Graph" Approach</h3>
+                            <p class="text-slate-600 text-sm mb-4">Pinecone must not just be a keyword; it must be an established entity linked to core concepts.</p>
+                            
+                            <div class="border-l-4 border-indigo-500 pl-4 py-2 bg-slate-50 mb-4">
+                                <p class="text-sm font-semibold text-slate-800">Target Entity Relationship:</p>
+                                <p class="text-xs text-slate-600 font-mono mt-1">[Pinecone] -> is_a -> [Vector Database]</p>
+                                <p class="text-xs text-slate-600 font-mono">[Pinecone] -> powers -> [RAG Architectures]</p>
+                                <p class="text-xs text-slate-600 font-mono">[Pinecone] -> integrates_with -> [OpenAI Embeddings]</p>
+                            </div>
+
+                            <h4 class="font-semibold text-slate-800 text-sm mt-6 mb-2">Content Guidelines for Writers:</h4>
+                            <ul class="text-sm text-slate-600 space-y-2">
+                                <li>➡ <strong>Eliminate fluff intros.</strong> Start directly with definitions.</li>
+                                <li>➡ <strong>Use Markdown tables.</strong> LLMs parse tabular data perfectly for comparisons.</li>
+                                <li>➡ <strong>Semantic Headings.</strong> H2s should be questions users ask prompts (e.g., "How does Pinecone handle billion-scale vectors?").</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="kpis" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Measurement & KPIs</h2>
+                    <p class="text-slate-600 text-lg">Tracking AEO is notoriously difficult as AI bots rarely pass referral headers. We must use proxy metrics and specific tracking strategies to measure success.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-800">Projected Impact: AI-Driven Developer Signups</h3>
+                            <p class="text-sm text-slate-500">Modeled growth tracking proxy metrics (brand mentions in AI, direct traffic to docs, and specific referral parameters).</p>
+                        </div>
+                        <div class="hidden sm:flex gap-2">
+                            <button onclick="updateKPIChart('conservative')" class="px-3 py-1 text-xs rounded border border-slate-200 hover:bg-slate-50 text-slate-600">Conservative</button>
+                            <button onclick="updateKPIChart('aggressive')" class="px-3 py-1 text-xs rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium">Aggressive</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                        <div class="text-2xl mb-2">🤖</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Brand Mentions via API</h4>
+                        <p class="text-xs text-slate-500 mb-3">Automated querying of GPT-4, Claude 3, and Gemini via API using standard developer prompts to track how often Pinecone is recommended.</p>
+                        <div class="text-lg font-bold text-indigo-600">Target: 80% Win Rate</div>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                        <div class="text-2xl mb-2">🔗</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Perplexity Referrals</h4>
+                        <p class="text-xs text-slate-500 mb-3">Unlike ChatGPT, Perplexity passes referral data. Tracking traffic originating from perplexity.ai to our documentation pages.</p>
+                        <div class="text-lg font-bold text-indigo-600">Target: +150% YoY</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                        <div class="text-2xl mb-2">📊</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Docs Scraping Frequency</h4>
+                        <p class="text-xs text-slate-500 mb-3">Monitoring server logs for known AI crawler user agents (GPTBot, ClaudeBot) hitting our `/llms.txt` and OpenAPI specification files.</p>
+                        <div class="text-lg font-bold text-indigo-600">Target: Daily Indexing</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // State Management
+        const state = {
+            activeTab: 'overview',
+            kpiProjection: 'aggressive'
+        };
+
+        // Chart Instances
+        let sovChartInstance = null;
+        let contentChartInstance = null;
+        let kpiChartInstance = null;
+
+        // Navigation Logic
+        function switchTab(tabId) {
+            // Update State
+            state.activeTab = tabId;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Remove active state from nav items
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('text-slate-600', 'hover:bg-slate-50');
+                el.classList.remove('bg-indigo-100', 'text-indigo-600', 'font-semibold', 'border-r-4', 'border-indigo-600');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+
+            // Set active state on clicked nav item
+            const activeNav = document.getElementById('nav-' + tabId);
+            activeNav.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            activeNav.style.backgroundColor = '#e0e7ff';
+            activeNav.style.color = '#4f46e5';
+            activeNav.style.fontWeight = '600';
+            activeNav.style.borderRight = '4px solid #4f46e5';
+
+            // Trigger chart rendering based on tab to ensure correct dimensions
+            if (tabId === 'overview' && !sovChartInstance) renderSovChart();
+            if (tabId === 'content' && !contentChartInstance) renderContentChart();
+            if (tabId === 'kpis' && !kpiChartInstance) renderKPIChart();
+        }
+
+        // Action Plan Filtering
+        function filterActions() {
+            const filterValue = document.getElementById('dept-filter').value;
+            const cards = document.querySelectorAll('.action-card');
+
+            cards.forEach(card => {
+                if (filterValue === 'all' || card.getAttribute('data-dept') === filterValue) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Common Chart Options
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { family: "'Segoe UI', sans-serif" }, color: '#475569' }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleFont: { size: 13, family: "'Segoe UI', sans-serif" },
+                    bodyFont: { size: 13, family: "'Segoe UI', sans-serif" },
+                    padding: 10,
+                    cornerRadius: 8,
+                    displayColors: true
+                }
+            }
+        };
+
+        // Render Charts
+        function renderSovChart() {
+            const ctx = document.getElementById('sovChart').getContext('2d');
+            sovChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pinecone', 'Milvus', 'Weaviate', 'Qdrant', 'Others'],
+                    datasets: [{
+                        data: [45, 20, 15, 12, 8],
+                        backgroundColor: [
+                            '#4f46e5', // indigo-600
+                            '#94a3b8', // slate-400
+                            '#cbd5e1', // slate-300
+                            '#e2e8f0', // slate-200
+                            '#f1f5f9'  // slate-100
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '65%',
+                    plugins: {
+                        ...commonOptions.plugins,
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderContentChart() {
+            const ctx = document.getElementById('contentChart').getContext('2d');
+            contentChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Marketing Blogs', 'API Reference', 'Markdown Tables', 'GitHub Readmes', 'StackOverflow', 'Video Tutorials'],
+                    datasets: [
+                        {
+                            label: 'LLM Parsing Value (AEO)',
+                            data: [30, 95, 90, 85, 80, 10],
+                            backgroundColor: 'rgba(79, 70, 229, 0.2)', // indigo
+                            borderColor: '#4f46e5',
+                            pointBackgroundColor: '#4f46e5',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Human Search Value (SEO)',
+                            data: [90, 60, 40, 50, 70, 85],
+                            backgroundColor: 'rgba(148, 163, 184, 0.2)', // slate
+                            borderColor: '#94a3b8',
+                            pointBackgroundColor: '#94a3b8',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: { font: { size: 11, family: "'Segoe UI', sans-serif" }, color: '#475569' },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderKPIChart() {
+            const ctx = document.getElementById('kpiChart').getContext('2d');
+            
+            const dataAggressive = [1200, 1450, 1800, 2400, 3500, 5200];
+            const dataConservative = [1200, 1300, 1450, 1650, 1900, 2200];
+            
+            const dataToUse = state.kpiProjection === 'aggressive' ? dataAggressive : dataConservative;
+
+            if (kpiChartInstance) {
+                kpiChartInstance.data.datasets[0].data = dataToUse;
+                kpiChartInstance.update();
+                return;
+            }
+
+            kpiChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Next Yr)', 'Q2 (Next Yr)'],
+                    datasets: [{
+                        label: 'Estimated Signups via AI Discovery',
+                        data: dataToUse,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#4f46e5',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9', drawBorder: false },
+                            ticks: { color: '#64748b' }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateKPIChart(type) {
+            state.kpiProjection = type;
+            renderKPIChart();
+            
+            // Update button styles visually
+            const btns = document.querySelectorAll('#kpis button');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === type) {
+                    b.className = "px-3 py-1 text-xs rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium";
+                } else {
+                    b.className = "px-3 py-1 text-xs rounded border border-slate-200 hover:bg-slate-50 text-slate-600";
+                }
+            });
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initial styling for active nav
+            const activeNav = document.getElementById('nav-overview');
+            activeNav.style.backgroundColor = '#e0e7ff';
+            activeNav.style.color = '#4f46e5';
+            activeNav.style.fontWeight = '600';
+            activeNav.style.borderRight = '4px solid #4f46e5';
+            
+            renderSovChart(); // Render initial chart
+        });
+
+    </script>
+</body>
+</html>
