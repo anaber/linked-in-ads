@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated AEO Strategy: Pinecone.io</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Slate & Deep Indigo - A professional, high-authority tech palette designed for developer-facing strategic reports. -->
+    
+    <!-- Application Structure Plan: This SPA serves as a "War Room" dashboard for Pinecone's transition from SEO to AEO. It is structured into 6 logical modules:
+         1. Executive Overview: High-level SOV and the AEO vs SEO paradigm.
+         2. The Signal Problem: Specific data from the audit showing the Pod-weighted imbalance (78 pages).
+         3. Integrated Action Plan: A combined list of original technical tasks and new audit-driven tasks, filterable by department.
+         4. Entity Strategy: Technical mapping of how LLMs should perceive the "Pinecone Serverless" entity.
+         5. External Audit Deep-Dive: Actionable tracking for threats like Supabase and TigerData.
+         6. Projections & Roadmap: Combined timeline and KPI growth metrics.
+         This structure ensures both foundational AEO theory and specific audit actions are equally accessible. -->
+    
+    <!-- Visualization & Content Choices: 
+         1. SOV -> Goal: Compare Market Presence -> Doughnut (Chart.js) -> Hover tooltips -> Justification: Quick visual of brand authority.
+         2. Signal Audit -> Goal: Compare footprint balance -> Horizontal Bar (Chart.js) -> Interaction: Hover details -> Justification: Shows the 78-page legacy imbalance.
+         3. Content Strategy -> Goal: Format Effectiveness -> Radar (Chart.js) -> Interaction: Legend toggle -> Justification: Compares machine-readability vs human-readability.
+         4. Growth -> Goal: Projection -> Line Chart (Chart.js) -> Interaction: Dynamic data switching -> Justification: Shows time-series impact of the AEO shift.
+         Confirming NO SVG graphics or Mermaid JS used. -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin: auto; height: 320px; }
+        .nav-item.active { background-color: #4f46e5; color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeInUp 0.4s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .priority-crit { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .priority-high { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-80 bg-slate-900 text-slate-300 flex flex-col z-30">
+        <div class="p-8">
+            <h1 class="text-white text-2xl font-black tracking-tighter">PINECONE<span class="text-indigo-400">.AEO</span></h1>
+            <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mt-1">Integrated Intelligence Dashboard</p>
+        </div>
+
+        <nav class="flex-grow px-4 space-y-1 overflow-y-auto custom-scrollbar">
+            <button onclick="switchTab('overview')" id="nav-overview" class="nav-item active w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">🌍</span> Overview & SOV
+            </button>
+            <button onclick="switchTab('signal')" id="nav-signal" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">📡</span> The Signal Problem
+            </button>
+            <button onclick="switchTab('actions')" id="nav-actions" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">⚡</span> Master Action Plan
+            </button>
+            <button onclick="switchTab('entity')" id="nav-entity" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">🧱</span> Entity Architecture
+            </button>
+            <button onclick="switchTab('audit')" id="nav-audit" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">⚠️</span> Citation Audit
+            </button>
+            <button onclick="switchTab('kpis')" id="nav-kpis" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center transition-all">
+                <span class="mr-3">📈</span> Roadmap & KPIs
+            </button>
+        </nav>
+
+        <div class="p-6 border-t border-slate-800 bg-slate-950">
+            <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-xs font-mono text-slate-400">Audit Status: Additive Integration</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow overflow-y-auto bg-slate-50">
+        <div class="max-w-6xl mx-auto p-6 md:p-12">
+
+            <!-- TAB: Overview -->
+            <section id="overview" class="tab-content active">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">AEO Strategic Foundation</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">To win in LLM rankings, Pinecone must shift from optimizing for click-throughs to optimizing for <strong>Semantic Ingestion</strong>. This requires a unified brand signal across all AI training data nodes.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-6">LLM Share of Voice (SOV)</h3>
+                        <div class="chart-container">
+                            <canvas id="sovChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-900 text-white p-8 rounded-2xl shadow-xl flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold mb-4">AEO vs. SEO Hierarchy</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="flex items-center p-3 bg-white/10 rounded-lg">
+                                <span class="text-xl mr-3">🔍</span>
+                                <div><strong>Traditional SEO:</strong> Backlinks, Keywords, CTR. Target: Humans.</div>
+                            </div>
+                            <div class="flex items-center p-3 bg-indigo-500/50 rounded-lg">
+                                <span class="text-xl mr-3">🤖</span>
+                                <div><strong>Answer Engine Opt:</strong> Entities, Schema, Facts. Target: LLMs.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Signal Problem -->
+            <section id="tab-signal" class="tab-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">The "Legacy Signal" Problem</h2>
+                    <p class="text-lg text-slate-600">The March 2024 Audit reveals a massive imbalance. LLMs currently view Pinecone as a "Pod-based" service because legacy content outnumbers modern Serverless content 6.5 to 1.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                        <div class="lg:col-span-2">
+                            <h3 class="font-bold text-slate-800 mb-6 text-center">Audit Results: Signal Volume (Pages)</h3>
+                            <div class="chart-container">
+                                <canvas id="signalChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                                <div class="text-4xl font-black text-indigo-600">78</div>
+                                <div class="text-xs uppercase tracking-widest font-bold text-slate-400 mt-2">Legacy Pod Pages</div>
+                            </div>
+                            <p class="text-sm text-slate-500 italic font-medium leading-relaxed">
+                                "The legacy signal is reinforced by years of backlink accumulation and third-party tutorials. AEO requires active suppression of this noise."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Master Action Plan -->
+            <section id="tab-actions" class="tab-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Master Action Plan</h2>
+                    <p class="text-lg text-slate-600">Integrating general AEO best practices with specific audit-driven technical fixes.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                        <h3 class="text-xl font-bold text-slate-800">Unified Task Matrix</h3>
+                        <select id="task-filter" onchange="filterTasks()" class="bg-slate-50 border border-slate-200 text-sm rounded-lg p-2.5">
+                            <option value="all">All Departments</option>
+                            <option value="eng">Engineering / DevRel</option>
+                            <option value="seo">Technical SEO</option>
+                            <option value="content">Content Strategy</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="task-container">
+                        <!-- Technical AEO Foundations -->
+                        <div class="p-5 bg-slate-50 rounded-xl border border-slate-200" data-dept="seo">
+                            <div class="flex justify-between mb-2"><span class="priority-high text-[10px] px-2 py-1 rounded-full font-bold">Priority: High</span><span class="text-[10px] text-slate-400 font-bold uppercase">Foundation</span></div>
+                            <h4 class="font-bold text-slate-800">Deploy `/llms.txt`</h4>
+                            <p class="text-xs text-slate-600 mt-2">Create a markdown-optimized root file for LLM scraping that explicitly defines current serverless capabilities.</p>
+                        </div>
+                        
+                        <!-- Audit Fixes -->
+                        <div class="p-5 bg-indigo-50 rounded-xl border border-indigo-100" data-dept="seo">
+                            <div class="flex justify-between mb-2"><span class="priority-crit text-[10px] px-2 py-1 rounded-full font-bold">Priority: Critical</span><span class="text-[10px] text-indigo-400 font-bold uppercase">Audit Fix</span></div>
+                            <h4 class="font-bold text-slate-800">Deprecation Signal Overhaul</h4>
+                            <p class="text-xs text-slate-600 mt-2">Update H1s and Meta tags for 78 legacy pages to include "Deprecated" or "Legacy". AI engines weight these positions heavily.</p>
+                        </div>
+
+                        <div class="p-5 bg-slate-50 rounded-xl border border-slate-200" data-dept="eng">
+                            <div class="flex justify-between mb-2"><span class="priority-high text-[10px] px-2 py-1 rounded-full font-bold">Priority: High</span><span class="text-[10px] text-slate-400 font-bold uppercase">Foundation</span></div>
+                            <h4 class="font-bold text-slate-800">OpenAPI Spec 3.1 Hardening</h4>
+                            <p class="text-xs text-slate-600 mt-2">LLM agents use these specs to write Pinecone integration code. Summary fields must be descriptive.</p>
+                        </div>
+
+                        <div class="p-5 bg-indigo-50 rounded-xl border border-indigo-100" data-dept="content">
+                            <div class="flex justify-between mb-2"><span class="priority-crit text-[10px] px-2 py-1 rounded-full font-bold">Priority: Critical</span><span class="text-[10px] text-indigo-400 font-bold uppercase">Audit Fix</span></div>
+                            <h4 class="font-bold text-slate-800">Definitive "How it Works" Page</h4>
+                            <p class="text-xs text-slate-600 mt-2">Create one massive, high-authority Serverless Architecture node with FAQPage schema to act as the primary AI ingestion point.</p>
+                        </div>
+
+                        <div class="p-5 bg-slate-50 rounded-xl border border-slate-200" data-dept="content">
+                            <div class="flex justify-between mb-2"><span class="priority-high text-[10px] px-2 py-1 rounded-full font-bold">Priority: High</span><span class="text-[10px] text-slate-400 font-bold uppercase">Foundation</span></div>
+                            <h4 class="font-bold text-slate-800">Co-Citation in AI Frameworks</h4>
+                            <p class="text-xs text-slate-600 mt-2">Aggressively update LangChain/LlamaIndex docs to default to Pinecone Serverless examples.</p>
+                        </div>
+
+                        <div class="p-5 bg-indigo-50 rounded-xl border border-indigo-100" data-dept="seo">
+                            <div class="flex justify-between mb-2"><span class="priority-high text-[10px] px-2 py-1 rounded-full font-bold">Priority: High</span><span class="text-[10px] text-indigo-400 font-bold uppercase">Audit Fix</span></div>
+                            <h4 class="font-bold text-slate-800">Schema.org FAQ Deployment</h4>
+                            <p class="text-xs text-slate-600 mt-2">Implement deep Schema on top 20 help center pages to establish explicit entity relationships for Pinecone Serverless.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Entity Architecture -->
+            <section id="tab-entity" class="tab-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Content & Entity Strategy</h2>
+                    <p class="text-lg text-slate-600">AEO is about defining a Knowledge Graph node. We must maximize the "Semantic Ingestion Value" of our content.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-6">Parsing Value Comparison</h3>
+                        <div class="chart-container">
+                            <canvas id="contentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-slate-100">
+                        <h3 class="text-xl font-bold mb-4">Target Entity Mapping</h3>
+                        <div class="space-y-4 font-mono text-sm bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <p class="text-indigo-600">[Pinecone] &lt;is_a&gt; [Serverless Vector DB]</p>
+                            <p class="text-slate-500">[Pinecone] &lt;supersedes&gt; [Pod-based Indexing]</p>
+                            <p class="text-slate-500">[Pinecone] &lt;performs&gt; [p95 Latency &lt; 50ms]</p>
+                            <p class="text-slate-500">[Pinecone] &lt;optimized_for&gt; [RAG Architectures]</p>
+                        </div>
+                        <p class="mt-4 text-sm text-slate-500 leading-relaxed">
+                            <strong>Instruction:</strong> Writers must avoid fluff. Every introduction must be a factual definition that can be quoted verbatim by a LLM agent.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Audit Citations -->
+            <section id="tab-audit" class="tab-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Critical External Audit</h2>
+                    <p class="text-lg text-slate-600">Tracking the external sources currently misleading AI engines about Pinecone's performance.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-400 font-bold uppercase text-[10px] tracking-widest">
+                            <tr>
+                                <th class="px-6 py-4">Source</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">The Threat</th>
+                                <th class="px-6 py-4">Target Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 font-bold">Supabase.com</td>
+                                <td class="px-6 py-4"><span class="priority-crit px-2 py-1 rounded text-[10px] font-bold">Critical</span></td>
+                                <td class="px-6 py-4 text-slate-500">Stale Pod benchmarks (s1/p1) make Pinecone look slow.</td>
+                                <td class="px-6 py-4 text-indigo-600 font-bold">Outreach for Serverless Update.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 font-bold">Tigerdata.com</td>
+                                <td class="px-6 py-4"><span class="priority-crit px-2 py-1 rounded text-[10px] font-bold">Critical</span></td>
+                                <td class="px-6 py-4 text-slate-500">Claims 28x lower p95 latency for pgvector vs pods.</td>
+                                <td class="px-6 py-4 text-indigo-600 font-bold">Publish Counter-Benchmarks.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 font-bold">Pulumi / Terraform</td>
+                                <td class="px-6 py-4"><span class="priority-high px-2 py-1 rounded text-[10px] font-bold">High</span></td>
+                                <td class="px-6 py-4 text-slate-500">Registry examples default to pod-based creation.</td>
+                                <td class="px-6 py-4 text-indigo-600 font-bold">PR update to Serverless defaults.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 font-bold">Confident-AI</td>
+                                <td class="px-6 py-4"><span class="priority-crit px-2 py-1 rounded text-[10px] font-bold">Critical</span></td>
+                                <td class="px-6 py-4 text-slate-500">Negative migration story cited by AI.</td>
+                                <td class="px-6 py-4 text-indigo-600 font-bold">Co-author Serverless Case Study.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB: KPIs -->
+            <section id="tab-kpis" class="tab-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Roadmap & Impact</h2>
+                    <p class="text-lg text-slate-600">The 60-day offensive timeline and projected growth in AI-driven traffic.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-6">AI-Driven Signup Projections</h3>
+                        <div class="chart-container">
+                            <canvas id="kpiChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 flex items-center"><span class="mr-2">📅</span> Phase 1: Weeks 1-2</h4>
+                            <p class="text-xs text-slate-500 mt-2">Publish Definitive Serverless Architecture Page. Deploy `/llms.txt`. Update deprecation banners on top 10 pod docs.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 flex items-center"><span class="mr-2">📅</span> Phase 2: Month 1</h4>
+                            <p class="text-xs text-slate-500 mt-2">External outreach to Supabase/TigerData. PR updates to Terraform/Pulumi. Deploy FAQ schema to help center.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 flex items-center"><span class="mr-2">📅</span> Phase 3: Month 2</h4>
+                            <p class="text-xs text-slate-500 mt-2">Apply "noindex" to low-value pod SDK pages. Consolidate legacy doc folders. Monitor AI Share of Voice via API.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Tab Management
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(tabId === 'overview' ? 'overview' : 'tab-' + tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+
+            // Render/Update charts
+            if (tabId === 'overview') renderSovChart();
+            if (tabId === 'signal') renderSignalChart();
+            if (tabId === 'entity') renderContentChart();
+            if (tabId === 'kpis') renderKPIChart();
+        }
+
+        // Filtering Logic
+        function filterTasks() {
+            const filter = document.getElementById('task-filter').value;
+            const tasks = document.querySelectorAll('#task-container > div');
+            tasks.forEach(t => {
+                if(filter === 'all' || t.getAttribute('data-dept') === filter) {
+                    t.style.display = 'block';
+                } else {
+                    t.style.display = 'none';
+                }
+            });
+        }
+
+        // Charting Logic
+        let charts = {};
+
+        function renderSovChart() {
+            const ctx = document.getElementById('sovChart').getContext('2d');
+            if(charts.sov) charts.sov.destroy();
+            charts.sov = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pinecone', 'Milvus', 'Weaviate', 'Qdrant', 'Others'],
+                    datasets: [{
+                        data: [42, 21, 14, 13, 10],
+                        backgroundColor: ['#4f46e5', '#94a3b8', '#cbd5e1', '#e2e8f0', '#f1f5f9']
+                    }]
+                },
+                options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function renderSignalChart() {
+            const ctx = document.getElementById('signalChart').getContext('2d');
+            if(charts.signal) charts.signal.destroy();
+            charts.signal = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Internal Docs', 'Blog Content', 'External Comparisons', 'Github/Community', 'Ecosystem Tutorials'],
+                    datasets: [
+                        { label: 'Legacy Pod Pages', data: [42, 18, 12, 5, 1], backgroundColor: '#94a3b8' },
+                        { label: 'Modern Serverless Pages', data: [12, 4, 1, 2, 2], backgroundColor: '#4f46e5' }
+                    ]
+                },
+                options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function renderContentChart() {
+            const ctx = document.getElementById('contentChart').getContext('2d');
+            if(charts.content) charts.content.destroy();
+            charts.content = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['API Specs', 'Markdown Tables', 'FAQ Schema', 'Intro Summaries', 'Blog Narrative', 'Video Scripts'],
+                    datasets: [
+                        { label: 'Machine Consumption (AEO)', data: [98, 92, 95, 88, 30, 10], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)' },
+                        { label: 'Human Consumption (SEO)', data: [40, 30, 20, 70, 95, 90], borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.1)' }
+                    ]
+                },
+                options: { maintainAspectRatio: false, scales: { r: { min: 0, max: 100 } } }
+            });
+        }
+
+        function renderKPIChart() {
+            const ctx = document.getElementById('kpiChart').getContext('2d');
+            if(charts.kpi) charts.kpi.destroy();
+            charts.kpi = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['W1', 'W2', 'W3', 'W4', 'M2 (W1)', 'M2 (W2)'],
+                    datasets: [{
+                        label: 'AI-Referral Growth',
+                        data: [100, 140, 210, 350, 600, 920],
+                        borderColor: '#4f46e5',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(79, 70, 229, 0.05)'
+                    }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+        }
+
+        // Init
+        window.onload = () => {
+            renderSovChart();
+        }
+    </script>
+</body>
+</html>
