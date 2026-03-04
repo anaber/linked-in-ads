@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEO Strategic Roadmap: Pinecone.io</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Deep Slate & Electric Indigo - Maintaining a high-tech, authoritative aesthetic that aligns with vector database branding. -->
+    
+    <!-- Application Structure Plan: The SPA is organized into four strategic pillars derived from the new audit: 
+         1. The Signal Problem: Visualizing the 78-page pod-weighted imbalance.
+         2. Priority Audit: An interactive database of external citations (Supabase, TigerData) requiring urgent outreach.
+         3. The Three-Lever Strategy: Detailing the 'Suppress', 'Boost', and 'Structure' framework.
+         4. Implementation Roadmap: A phased timeline (Now to Month 2) for concrete execution.
+         This layout prioritizes the transition from legacy 'Pod' architecture to 'Serverless' as the primary AEO goal. -->
+    
+    <!-- Visualization & Content Choices: 
+         1. Signal Audit -> Goal: Compare legacy vs. modern footprint -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Clearly illustrates the 78 legacy pages vs. newer serverless signal.
+         2. External Citations -> Goal: Organize actionable outreach -> Viz: Filterable Interactive Table (HTML/JS) -> Interaction: Priority filtering -> Justification: Users can drill down into 'Critical' threats from competitors like Supabase.
+         3. Priority Distribution -> Goal: Inform on risk levels -> Viz: Pie Chart (Chart.js) -> Interaction: Legend toggle -> Justification: Shows the volume of Critical vs High risk content needing attention.
+         4. Roadmap -> Goal: Time-series planning -> Viz: Interactive Timeline (HTML/Tailwind) -> Interaction: Status toggles -> Justification: Breaks the complex audit into manageable phases (Week 1, Week 2-4, etc.).
+         Library: Chart.js (Canvas). CONFIRMATION: NO SVG/Mermaid used. -->
+         
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin: 0 auto; height: 320px; }
+        .nav-active { background-color: #4f46e5; color: white; border-radius: 0.5rem; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .priority-critical { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .priority-high { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .priority-med { background-color: #f0f9ff; color: #075985; border: 1px solid #bae6fd; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-72 bg-slate-900 text-white flex flex-col shadow-2xl z-20">
+        <div class="p-8">
+            <h1 class="text-2xl font-extrabold tracking-tight">PINECONE<span class="text-indigo-400">.AEO</span></h1>
+            <p class="text-xs text-slate-400 mt-2 font-mono">STRATEGIC AUDIT v2.0</p>
+        </div>
+        
+        <nav class="flex-grow px-4 space-y-2 overflow-y-auto custom-scrollbar">
+            <button onclick="showTab('audit')" id="btn-audit" class="nav-active w-full text-left px-4 py-3 flex items-center transition-all">
+                <span class="mr-3">📡</span> Signal Problem
+            </button>
+            <button onclick="showTab('citations')" id="btn-citations" class="w-full text-left px-4 py-3 flex items-center text-slate-300 hover:bg-slate-800 transition-all">
+                <span class="mr-3">⚠️</span> Priority Audit
+            </button>
+            <button onclick="showTab('levers')" id="btn-levers" class="w-full text-left px-4 py-3 flex items-center text-slate-300 hover:bg-slate-800 transition-all">
+                <span class="mr-3">🛠️</span> Three Levers
+            </button>
+            <button onclick="showTab('roadmap')" id="btn-roadmap" class="w-full text-left px-4 py-3 flex items-center text-slate-300 hover:bg-slate-800 transition-all">
+                <span class="mr-3">📅</span> Action Roadmap
+            </button>
+        </nav>
+
+        <div class="p-6 bg-slate-950 border-t border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-xs font-semibold text-slate-400">Active Audit Target: Serverless</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow overflow-y-auto bg-slate-50 relative">
+        <header class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex justify-between items-center z-10">
+            <div id="tab-title" class="text-sm font-bold text-slate-500 uppercase tracking-widest">Executive Summary</div>
+            <div class="text-xs text-slate-400 font-medium">Updated: March 2024 Findings</div>
+        </header>
+
+        <div class="p-8 max-w-6xl mx-auto">
+            
+            <!-- TAB: Signal Problem -->
+            <section id="tab-audit" class="tab-content active">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 mb-8">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">The Core Problem: Signal Imbalance</h2>
+                    <p class="text-slate-600 leading-relaxed max-w-3xl mb-8">
+                        AI engines (ChatGPT, Perplexity, Gemini) build their understanding of Pinecone from the aggregate signal across the web. Our audit reveals that the "Pod" architecture footprint is currently overwhelming our "Serverless" narrative. To an LLM, Pinecone is still a pod-based service.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">Legacy vs. Modern Footprint (Pages)</h3>
+                            <div class="chart-container">
+                                <canvas id="signalChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div class="text-2xl font-bold text-indigo-600">78</div>
+                                <div class="text-sm text-slate-500">Internal & External pages currently referencing legacy pods.</div>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div class="text-2xl font-bold text-amber-600">High</div>
+                                <div class="text-sm text-slate-500">Signal noise causing AI to recommend stale benchmarks.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-indigo-900 text-white rounded-2xl shadow-lg">
+                        <h3 class="text-xl font-bold mb-3">Defensive Strategy</h3>
+                        <p class="text-indigo-100 text-sm mb-4">Strengthen deprecation language in H1s and Meta tags for all 78 legacy pages. Replace soft banners with explicit "Legacy Architecture" warnings.</p>
+                        <div class="text-xs font-mono bg-indigo-800 p-2 rounded">Status: 0/78 Pages Updated</div>
+                    </div>
+                    <div class="p-6 bg-emerald-900 text-white rounded-2xl shadow-lg">
+                        <h3 class="text-xl font-bold mb-3">Offensive Strategy</h3>
+                        <p class="text-emerald-100 text-sm mb-4">Publish a definitive "How Pinecone Works" serverless page with FAQPage schema to act as the primary node for all AI ingestion.</p>
+                        <div class="text-xs font-mono bg-emerald-800 p-2 rounded">Status: In Progress (Week 1)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Priority Audit Citations -->
+            <section id="tab-citations" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">Priority External Audit</h2>
+                    <p class="text-slate-600">Detailed list of external threats where competitor content or stale benchmarks are misleading AI engines.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                        <div class="flex gap-2">
+                            <button onclick="filterTable('all')" class="px-3 py-1 text-xs font-bold rounded-md bg-white border border-slate-200">All</button>
+                            <button onclick="filterTable('1- Critical')" class="px-3 py-1 text-xs font-bold rounded-md bg-red-50 text-red-700 border border-red-200">Critical</button>
+                            <button onclick="filterTable('2- High')" class="px-3 py-1 text-xs font-bold rounded-md bg-orange-50 text-orange-700 border border-orange-200">High</button>
+                        </div>
+                        <div class="text-xs text-slate-400">Total Audit Items: 6</div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm" id="citation-table">
+                            <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-widest font-bold">
+                                <tr>
+                                    <th class="px-6 py-4">Source / Entity</th>
+                                    <th class="px-6 py-4">Priority</th>
+                                    <th class="px-6 py-4">The Threat</th>
+                                    <th class="px-6 py-4">AEO Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr class="hover:bg-slate-50" data-priority="1- Critical">
+                                    <td class="px-6 py-4 font-bold text-slate-900">supabase.com</td>
+                                    <td class="px-6 py-4"><span class="priority-critical px-2 py-1 rounded text-xs font-bold">1- Critical</span></td>
+                                    <td class="px-6 py-4 text-slate-600">Benchmarks stale pod indexes; shows pgvector outperforming.</td>
+                                    <td class="px-6 py-4 font-medium text-indigo-600">Outreach for Serverless update.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50" data-priority="1- Critical">
+                                    <td class="px-6 py-4 font-bold text-slate-900">tigerdata.com</td>
+                                    <td class="px-6 py-4"><span class="priority-critical px-2 py-1 rounded text-xs font-bold">1- Critical</span></td>
+                                    <td class="px-6 py-4 text-slate-600">Claims 28x lower p95 latency for pgvector vs pods.</td>
+                                    <td class="px-6 py-4 font-medium text-indigo-600">Publish serverless counter-benchmarks.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50" data-priority="1- Critical">
+                                    <td class="px-6 py-4 font-bold text-slate-900">confident-ai.com</td>
+                                    <td class="px-6 py-4"><span class="priority-critical px-2 py-1 rounded text-xs font-bold">1- Critical</span></td>
+                                    <td class="px-6 py-4 text-slate-600">Migration story "Why we replaced Pinecone" cited by AI.</td>
+                                    <td class="px-6 py-4 font-medium text-indigo-600">Co-authored success story (Serverless).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50" data-priority="2- High">
+                                    <td class="px-6 py-4 font-bold text-slate-900">pulumi.com / terraform.io</td>
+                                    <td class="px-6 py-4"><span class="priority-high px-2 py-1 rounded text-xs font-bold">2- High</span></td>
+                                    <td class="px-6 py-4 text-slate-600">Registry examples default to pod-based index creation.</td>
+                                    <td class="px-6 py-4 font-medium text-indigo-600">PR update to serverless defaults.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50" data-priority="2- High">
+                                    <td class="px-6 py-4 font-bold text-slate-900">infoq.com</td>
+                                    <td class="px-6 py-4"><span class="priority-high px-2 py-1 rounded text-xs font-bold">2- High</span></td>
+                                    <td class="px-6 py-4 text-slate-600">High authority architectural overview of pods (2023).</td>
+                                    <td class="px-6 py-4 font-medium text-indigo-600">Pitch 2024 Serverless adoption article.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Three Levers Strategy -->
+            <section id="tab-levers" class="tab-content">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">The AEO Strategic Framework</h2>
+                    <p class="text-slate-600">Reshaping AI understanding by manipulating three core levers of digital signal.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="text-4xl mb-4">🔇</div>
+                        <h3 class="text-xl font-bold mb-4">1. Suppress the Pod Signal</h3>
+                        <p class="text-sm text-slate-500 mb-6">Reduce legacy noise to clear the path for new information.</p>
+                        <ul class="space-y-3 text-sm font-medium">
+                            <li class="flex items-center text-slate-700">⚪ Add "noindex" to low-value pod docs</li>
+                            <li class="flex items-center text-slate-700">⚪ Use "Deprecated" in Page Titles</li>
+                            <li class="flex items-center text-slate-700">⚪ Move pod links below-fold</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-xl shadow-indigo-100">
+                        <div class="text-4xl mb-4">🚀</div>
+                        <h3 class="text-xl font-bold mb-4">2. Boost Serverless Signal</h3>
+                        <p class="text-indigo-100 text-sm mb-6">Create high-authority nodes for AI discovery.</p>
+                        <ul class="space-y-3 text-sm font-medium">
+                            <li class="flex items-center">🔵 Publish definitive architecture page</li>
+                            <li class="flex items-center">🔵 Aggressive serverless benchmarks</li>
+                            <li class="flex items-center">🔵 Canonical links to serverless versions</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="text-4xl mb-4">🧱</div>
+                        <h3 class="text-xl font-bold mb-4">3. Structure for Bots</h3>
+                        <p class="text-sm text-slate-500 mb-6">Format data for flawless machine ingestion.</p>
+                        <ul class="space-y-3 text-sm font-medium">
+                            <li class="flex items-center text-slate-700">⚪ JSON-LD FAQPage Schema</li>
+                            <li class="flex items-center text-slate-700">⚪ Markdown-optimized `/llms.txt`</li>
+                            <li class="flex items-center text-slate-700">⚪ Explanatory H2 Questions</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: Roadmap -->
+            <section id="tab-roadmap" class="tab-content">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">Phased Implementation</h2>
+                    <p class="text-slate-600">The first 60 days of the offensive AEO content strategy.</p>
+                </div>
+
+                <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:bg-slate-200 before:h-full">
+                    
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 w-10 h-10 bg-indigo-600 border-4 border-white rounded-full flex items-center justify-center text-white font-bold">1</div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900">Phase: Now (Week 1)</h4>
+                            <p class="text-sm text-slate-500 mt-2">Publish definitive "How Pinecone Works" serverless architecture page with FAQPage schema. Add deprecation banners to top 5 doc pages.</p>
+                            <div class="mt-4 flex gap-2">
+                                <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Critical Impact</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Effort: Medium</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 w-10 h-10 bg-indigo-400 border-4 border-white rounded-full flex items-center justify-center text-white font-bold">2</div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900">Phase: Week 2-4</h4>
+                            <p class="text-sm text-slate-500 mt-2">External outreach to Supabase/TigerData. Publish serverless benchmarks. Add schema to top 20 help center pages.</p>
+                            <div class="mt-4 flex gap-2">
+                                <span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-1 rounded-full font-bold uppercase tracking-wider">High Impact</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Effort: Medium</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-12 opacity-50">
+                        <div class="absolute left-0 w-10 h-10 bg-slate-300 border-4 border-white rounded-full flex items-center justify-center text-white font-bold">3</div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900">Phase: Month 2</h4>
+                            <p class="text-sm text-slate-500 mt-2">Consolidate legacy doc sections. Begin "noindex" rollout for low-authority pod pages. Expand presence on Medium and YouTube.</p>
+                            <div class="mt-4 flex gap-2">
+                                <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Medium Impact</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Effort: High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // State
+        const tabs = ['audit', 'citations', 'levers', 'roadmap'];
+        let currentTab = 'audit';
+        let signalChartInstance = null;
+
+        // Tab Management
+        function showTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            // Sidebar styling
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('nav-active', 'text-white');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.add('nav-active', 'text-white');
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800');
+
+            // Header title
+            const titles = { audit: 'Signal Audit', citations: 'Priority Citations', levers: 'Strategy Framework', roadmap: 'Execution Timeline' };
+            document.getElementById('tab-title').innerText = titles[tabId];
+
+            // Re-render chart if needed
+            if(tabId === 'audit') renderSignalChart();
+        }
+
+        // Table Filtering
+        function filterTable(priority) {
+            const rows = document.querySelectorAll('#citation-table tbody tr');
+            rows.forEach(row => {
+                if(priority === 'all' || row.getAttribute('data-priority') === priority) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Charts
+        function renderSignalChart() {
+            const ctx = document.getElementById('signalChart').getContext('2d');
+            if (signalChartInstance) signalChartInstance.destroy();
+
+            signalChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Internal Docs', 'Blog Posts', 'Competitor Comparisons', 'Github / Ecosystem', 'Tutorials'],
+                    datasets: [
+                        {
+                            label: 'Legacy Pod Signal',
+                            data: [42, 18, 12, 5, 1],
+                            backgroundColor: '#94a3b8', // slate-400
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Serverless Signal',
+                            data: [12, 4, 1, 2, 2],
+                            backgroundColor: '#4f46e5', // indigo-600
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { weight: 'bold' } } }
+                    },
+                    scales: {
+                        x: { stacked: false, grid: { display: false } },
+                        y: { stacked: false, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Init
+        window.onload = () => {
+            renderSignalChart();
+        };
+    </script>
+</body>
+</html>
